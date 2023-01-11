@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+
+  ym_price_parser:
+    container_name: ym_price_parser
+    build: .
+    restart: always
+    environment:
+      TZ: Europe/Moscow
+      SQLALCHEMY_DB_URL: ${SQLALCHEMY_DB_URL}
+      SSLMODE: ${SSLMODE}
+      TARGET_SESSION_ATTRS: ${TARGET_SESSION_ATTRS}
+
+
+  nginx:
+    container_name: nginx_ym_price_parser
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - ym_price_parser
+    restart: always
+    environment:
+      - "TZ=Europe/Moscow"
+    ports:
+      - 8088:80
+      - 4439:443
+    volumes:
+      - /home/get/cert:/app/cert

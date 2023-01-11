@@ -1,24 +1,21 @@
-import database as db
-from database import engine
-from yandex_market import YMClient
-from concurrent.futures import ThreadPoolExecutor
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api import router
 
 
-def save_ym_prices(client_id, token, campaign_id):
-    client = YMClient(client_id, token, campaign_id)
-    client.get_prices()
+app = FastAPI(title="YM price parser")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=['GET', 'POST'],
+    allow_headers=['*'],
+)
+
+app.include_router(router)
 
 
 if __name__ == '__main__':
-    accounts_data = db.get_accounts_data(engine)
-    print(accounts_data)
-    credentials = []
-    for acc_data in accounts_data.values():
-        credentials.append((acc_data['client_id'], acc_data['token'], acc_data['campaign_id']))
-
-    for cred in credentials:
-        save_ym_prices(*cred)
-
-    # with ThreadPoolExecutor() as executor:
-    #     executor.map(save_ym_prices, credentials)
-
+    uvicorn.run("main:app", host='127.0.0.1', port=5000, reload=True)

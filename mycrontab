@@ -1,0 +1,2 @@
+# start cron job every day at 8:00 am
+0 8 * * *  /usr/local/bin/python3 /app/app/parser.py
