@@ -110,7 +110,7 @@ class YMClient:
         """Send data to 'JSON to DB API' to save it in price_table."""
         # Dropping nan and converting to list of dicts
         data = [row.dropna().to_dict() for i, row in df.iterrows()]
-        json_to_db_url = "https://apps1.ecomru.ru:4439/db/price_table"
+        json_to_db_url = ""
         # json_to_db_url = "http://127.0.0.1:8000/db/price_table"
         try:
             response = requests.post(json_to_db_url, json=data)
